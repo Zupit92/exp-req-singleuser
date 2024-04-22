@@ -1,0 +1,27 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<mule xmlns:http="http://www.mulesoft.org/schema/mule/http" xmlns:ee="http://www.mulesoft.org/schema/mule/ee/core"
+	xmlns="http://www.mulesoft.org/schema/mule/core"
+	xmlns:doc="http://www.mulesoft.org/schema/mule/documentation" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://www.mulesoft.org/schema/mule/core http://www.mulesoft.org/schema/mule/core/current/mule.xsd
+http://www.mulesoft.org/schema/mule/ee/core http://www.mulesoft.org/schema/mule/ee/core/current/mule-ee.xsd
+http://www.mulesoft.org/schema/mule/http http://www.mulesoft.org/schema/mule/http/current/mule-http.xsd">
+	<http:request-config name="HTTP_Request_configuration" doc:name="HTTP Request configuration" doc:id="d758282e-95fd-44e8-a799-77eb78895da1" basePath="/api">
+		<http:request-connection protocol="HTTPS" host="reqres.in" />
+	</http:request-config>
+	<sub-flow name="exp-req-singleuser-implementationSub_Flow" doc:id="ee85ce01-6b24-43ee-bd63-ef3c7260c1c1" >
+		<logger level="INFO" doc:name="Logger" doc:id="dd7ca2e4-baeb-4cca-81b7-197660304656" />
+		<ee:transform doc:name="Transform Message" doc:id="2a869267-1d6b-4546-ba20-1b11844d0e04" >
+			<ee:variables >
+				<ee:set-variable variableName="id" ><![CDATA[attributes.uriParams.'id']]></ee:set-variable>
+			</ee:variables>
+		</ee:transform>
+		<http:request method="GET" doc:name="Request" doc:id="9731f82d-a3a8-4c74-bffc-8fa55cc905ba" config-ref="HTTP_Request_configuration" path="/user/{id}">
+			<http:uri-params ><![CDATA[#[output application/java
+---
+{
+	"id" : attributes.uriParams.id
+}]]]></http:uri-params>
+		</http:request>
+		<logger level="INFO" doc:name="Logger" doc:id="390cdddd-45f9-48e4-b1f0-a00198e9fca0" message="#[payload]"/>
+	</sub-flow>
+</mule>
